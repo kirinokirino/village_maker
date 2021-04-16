@@ -1,0 +1,18 @@
+[package]
+name = "village_maker"
+version = "0.1.0"
+edition = "2018"
+description = "Game where you build your village from tiles"
+repository = "https://github.com/kirinokirino/village_maker"
+documentation = ""
+homepage = ""
+readme = "README.md"
+license = "mit"
+keywords = ["game"]
+categories = ["games"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bevy = "0.5"
+bevy_fly_camera = "0.7.0"
