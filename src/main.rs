@@ -32,17 +32,79 @@ fn main() {
         .add_system(exit_on_esc_system.system())
         .add_system(mouse_lock_system.system())
         //.add_system(show_scenes_system.system())
+        //.add_system(print_positions_system.system())
         .run();
 }
+
+struct Model {}
 
 /// set up a simple 3D scene
 #[allow(clippy::needless_pass_by_value)]
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let mut models: Vec<Handle<Scene>> = Vec::with_capacity(5);
+    let mut models: Vec<Handle<Scene>> = Vec::with_capacity(63);
+
+    models.push(asset_server.load("models/water.glb#Scene0"));
+    models.push(asset_server.load("models/water_rocks.glb#Scene0"));
+    models.push(asset_server.load("models/water_island.glb#Scene0"));
+    models.push(asset_server.load("models/unit_wallTower.glb#Scene0"));
+    models.push(asset_server.load("models/unit_tree.glb#Scene0"));
+    models.push(asset_server.load("models/unit_tower.glb#Scene0"));
+    models.push(asset_server.load("models/unit_mill.glb#Scene0"));
+    models.push(asset_server.load("models/unit_houseLarge.glb#Scene0"));
+    models.push(asset_server.load("models/unit_house.glb#Scene0"));
+    models.push(asset_server.load("models/unit_boat.glb#Scene0"));
+    models.push(asset_server.load("models/river_straight.glb#Scene0"));
+    models.push(asset_server.load("models/river_start.glb#Scene0"));
+    models.push(asset_server.load("models/river_intersectionH.glb#Scene0"));
+    models.push(asset_server.load("models/river_intersectionG.glb#Scene0"));
+    models.push(asset_server.load("models/river_intersectionF.glb#Scene0"));
+    models.push(asset_server.load("models/river_intersectionE.glb#Scene0"));
+    models.push(asset_server.load("models/river_intersectionD.glb#Scene0"));
+    models.push(asset_server.load("models/river_intersectionC.glb#Scene0"));
+    models.push(asset_server.load("models/river_intersectionB.glb#Scene0"));
+    models.push(asset_server.load("models/river_intersectionA.glb#Scene0"));
+    models.push(asset_server.load("models/river_end.glb#Scene0"));
+    models.push(asset_server.load("models/river_crossing.glb#Scene0"));
+    models.push(asset_server.load("models/river_cornerSharp.glb#Scene0"));
+    models.push(asset_server.load("models/river_corner.glb#Scene0"));
+    models.push(asset_server.load("models/path_straight.glb#Scene0"));
+    models.push(asset_server.load("models/path_start.glb#Scene0"));
+    models.push(asset_server.load("models/path_intersectionH.glb#Scene0"));
+    models.push(asset_server.load("models/path_intersectionG.glb#Scene0"));
+    models.push(asset_server.load("models/path_intersectionF.glb#Scene0"));
+    models.push(asset_server.load("models/path_intersectionE.glb#Scene0"));
+    models.push(asset_server.load("models/path_intersectionD.glb#Scene0"));
+    models.push(asset_server.load("models/path_intersectionC.glb#Scene0"));
+    models.push(asset_server.load("models/path_intersectionB.glb#Scene0"));
+    models.push(asset_server.load("models/path_intersectionA.glb#Scene0"));
+    models.push(asset_server.load("models/path_end.glb#Scene0"));
+    models.push(asset_server.load("models/path_crossing.glb#Scene0"));
+    models.push(asset_server.load("models/path_cornerSharp.glb#Scene0"));
+    models.push(asset_server.load("models/path_corner.glb#Scene0"));
+    models.push(asset_server.load("models/building_water.glb#Scene0"));
+    models.push(asset_server.load("models/building_wall.glb#Scene0"));
+    models.push(asset_server.load("models/building_village.glb#Scene0"));
+    models.push(asset_server.load("models/building_tower.glb#Scene0"));
+    models.push(asset_server.load("models/building_smelter.glb#Scene0"));
+    models.push(asset_server.load("models/building_sheep.glb#Scene0"));
+    models.push(asset_server.load("models/building_mine.glb#Scene0"));
+    models.push(asset_server.load("models/building_mill.glb#Scene0"));
+    models.push(asset_server.load("models/building_market.glb#Scene0"));
+    models.push(asset_server.load("models/building_house.glb#Scene0"));
+    models.push(asset_server.load("models/building_farm.glb#Scene0"));
+    models.push(asset_server.load("models/building_dock.glb#Scene0"));
+    models.push(asset_server.load("models/building_castle.glb#Scene0"));
+    models.push(asset_server.load("models/building_cabin.glb#Scene0"));
     models.push(asset_server.load("models/sand.glb#Scene0"));
+    models.push(asset_server.load("models/sand_rocks.glb#Scene0"));
     models.push(asset_server.load("models/grass.glb#Scene0"));
+    models.push(asset_server.load("models/grass_hill.glb#Scene0"));
+    models.push(asset_server.load("models/grass_forest.glb#Scene0"));
     models.push(asset_server.load("models/dirt.glb#Scene0"));
+    models.push(asset_server.load("models/dirt_lumber.glb#Scene0"));
     models.push(asset_server.load("models/stone.glb#Scene0"));
+    models.push(asset_server.load("models/stone_rocks.glb#Scene0"));
+    models.push(asset_server.load("models/stone_mountain.glb#Scene0"));
     models.push(asset_server.load("models/stone_hill.glb#Scene0"));
 
     let mut offset = 0.0;
@@ -51,6 +113,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             .spawn_bundle((
                 Transform::from_xyz(offset, 0.0, -1.0),
                 GlobalTransform::identity(),
+                Model {},
             ))
             .with_children(|parent| {
                 parent.spawn_scene(model);
@@ -98,6 +161,14 @@ fn show_scenes_system(mut scenes: Res<Assets<Scene>>, scene_spawner: Res<SceneSp
             });
         }
         */
+    }
+}
+
+fn print_positions_system(keyboard_input: Res<Input<KeyCode>>, query: Query<(&Transform, &Model)>) {
+    if keyboard_input.just_pressed(KeyCode::Space) {
+        for (transform, _) in query.iter() {
+            println!("{:#?}", transform);
+        }
     }
 }
 

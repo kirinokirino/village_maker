@@ -1,6 +1,8 @@
 # village_maker
 Game where you build your village from tiles
 
+Models in the assets folder are licensed under CC0 and provided by kenney.nl
+
 Don't forget to use dynamic feature to improve iteration times:
 `cargo run --features bevy/dynamic`
 
