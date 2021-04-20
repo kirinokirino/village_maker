@@ -14,5 +14,7 @@ categories = ["games"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = "0.5"
 bevy_fly_camera = "0.7.0"
+
+[dependencies.bevy]
+version = "0.5.*"

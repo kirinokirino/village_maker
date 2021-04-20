@@ -2,10 +2,14 @@
 #![warn(clippy::nursery, clippy::pedantic, clippy::cargo)]
 #![allow(clippy::multiple_crate_versions, clippy::default_trait_access)]
 
-use bevy::audio::AudioPlugin;
-use bevy::input::system::exit_on_esc_system;
-use bevy::prelude::*;
-
+use bevy::{
+    asset::HandleId,
+    audio::AudioPlugin,
+    diagnostic::{EntityCountDiagnosticsPlugin, FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
+    input::system::exit_on_esc_system,
+    prelude::*,
+    utils::Duration,
+};
 use bevy_fly_camera::{FlyCamera, FlyCameraPlugin};
 
 fn main() {
@@ -15,30 +19,45 @@ fn main() {
             ..Default::default()
         })
         .insert_resource(Msaa { samples: 4 })
+        .add_plugin(EntityCountDiagnosticsPlugin)
+        .add_plugin(FrameTimeDiagnosticsPlugin)
+        .add_plugin(LogDiagnosticsPlugin {
+            debug: true,
+            wait_duration: Duration::from_secs(1),
+            filter: None,
+        })
         .add_plugin(FlyCameraPlugin)
         .add_plugins_with(DefaultPlugins, |group| group.disable::<AudioPlugin>())
         .add_startup_system(setup.system())
         .add_system(exit_on_esc_system.system())
         .add_system(mouse_lock_system.system())
+        //.add_system(show_scenes_system.system())
         .run();
 }
 
 /// set up a simple 3D scene
 #[allow(clippy::needless_pass_by_value)]
-fn setup(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-    asset_server: Res<AssetServer>,
-) {
-    commands.spawn_scene(asset_server.load("models/building_cabin.glb#Scene0"));
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let mut models: Vec<Handle<Scene>> = Vec::with_capacity(5);
+    models.push(asset_server.load("models/sand.glb#Scene0"));
+    models.push(asset_server.load("models/grass.glb#Scene0"));
+    models.push(asset_server.load("models/dirt.glb#Scene0"));
+    models.push(asset_server.load("models/stone.glb#Scene0"));
+    models.push(asset_server.load("models/stone_hill.glb#Scene0"));
 
-    // plane
-    commands.spawn_bundle(PbrBundle {
-        mesh: meshes.add(Mesh::from(shape::Plane { size: 5.0 })),
-        material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
-        ..Default::default()
-    });
+    let mut offset = 0.0;
+    for model in models {
+        commands
+            .spawn_bundle((
+                Transform::from_xyz(offset, 0.0, -1.0),
+                GlobalTransform::identity(),
+            ))
+            .with_children(|parent| {
+                parent.spawn_scene(model);
+            });
+        offset += 1.0;
+    }
+
     // light
     commands.spawn_bundle(LightBundle {
         transform: Transform::from_xyz(4.0, 8.0, 4.0),
@@ -67,6 +86,19 @@ fn setup(
             key_down: KeyCode::LShift,
             enabled: true,
         });
+}
+
+fn show_scenes_system(mut scenes: Res<Assets<Scene>>, scene_spawner: Res<SceneSpawner>) {
+    for (handle, scene) in scenes.iter() {
+        println!("{:#?},{:#?}", handle, scene);
+        /*
+        if let Some(entity_iter) = scene_spawner.iter_instance_entities(instance_id) {
+            entity_iter.for_each(|entity| {
+                println!("{:#?}", entity);
+            });
+        }
+        */
+    }
 }
 
 fn mouse_lock_system(
