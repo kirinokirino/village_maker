@@ -34,9 +34,8 @@ fn main() {
         .add_startup_system(load_models.system())
         .add_startup_system(setup.system())
         .add_system(exit_on_esc_system.system())
-        .add_system(mouse_lock_system.system())
-        //.add_system(show_scenes_system.system())
-        .add_system(print_positions_system.system())
+        .add_system(mouse_lock.system())
+        .add_system(print_positions.system())
         .run();
 }
 
@@ -161,10 +160,7 @@ fn setup(mut commands: Commands) {
         });
 }
 
-fn print_positions_system(
-    keyboard_input: Res<Input<KeyCode>>,
-    query: Query<&Transform, With<Model>>,
-) {
+fn print_positions(keyboard_input: Res<Input<KeyCode>>, query: Query<&Transform, With<Model>>) {
     if keyboard_input.just_pressed(KeyCode::Key0) {
         for transform in query.iter() {
             println!("{:#?}", transform);
@@ -172,10 +168,7 @@ fn print_positions_system(
     }
 }
 
-fn mouse_lock_system(
-    mut cursor_entered_events: EventReader<CursorEntered>,
-    mut windows: ResMut<Windows>,
-) {
+fn mouse_lock(mut cursor_entered_events: EventReader<CursorEntered>, mut windows: ResMut<Windows>) {
     let window = windows
         .get_primary_mut()
         .expect("Couldn't find primary window.");
