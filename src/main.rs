@@ -28,6 +28,7 @@ fn main() {
         })
         .add_plugin(FlyCameraPlugin)
         .add_plugins_with(DefaultPlugins, |group| group.disable::<AudioPlugin>())
+        .add_startup_system(load_models.system())
         .add_startup_system(setup.system())
         .add_system(exit_on_esc_system.system())
         .add_system(mouse_lock_system.system())
@@ -40,8 +41,8 @@ struct Model {}
 
 /// set up a simple 3D scene
 #[allow(clippy::needless_pass_by_value)]
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let mut models: Vec<Handle<Scene>> = Vec::with_capacity(63);
+fn load_models(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let mut models: Vec<Handle<Scene>> = Vec::with_capacity(42);
 
     models.push(asset_server.load("models/water.glb#Scene0"));
     models.push(asset_server.load("models/water_rocks.glb#Scene0"));
@@ -125,7 +126,10 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             });
         offset += 1.0;
     }
-
+}
+/// set up a simple 3D scene
+#[allow(clippy::needless_pass_by_value)]
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     // light
     commands.spawn_bundle(LightBundle {
         transform: Transform::from_xyz(4.0, 8.0, 4.0),
