@@ -32,7 +32,6 @@ fn main() {
         .add_plugin(FlyCameraPlugin)
         .add_plugins_with(DefaultPlugins, |group| {
             group
-                .disable::<bevy::pbr::PbrPlugin>()
                 .disable::<bevy::audio::AudioPlugin>()
                 .disable::<bevy::diagnostic::DiagnosticsPlugin>()
                 .disable::<bevy::sprite::SpritePlugin>()
