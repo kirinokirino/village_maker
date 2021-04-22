@@ -28,15 +28,44 @@ fn main() {
         })
         .add_startup_system(load_tiles.system())
         .add_startup_system(setup.system())
+        .add_system(spawn_tiles.system())
         .add_system(exit_on_esc_system.system())
         .add_system(mouse_lock.system())
         .add_system(print_positions.system())
         .run();
 }
 
+struct Tiles {
+    stone: Handle<Scene>,
+    stone_rocks: Handle<Scene>,
+    stone_hill: Handle<Scene>,
+    stone_mountain: Handle<Scene>,
+}
+
+impl Tiles {
+    pub fn as_vec(&self) -> Vec<Handle<Scene>> {
+        vec![
+            self.stone.clone(),
+            self.stone_rocks.clone(),
+            self.stone_hill.clone(),
+            self.stone_mountain.clone(),
+        ]
+    }
+}
 struct Tile;
 
 /// Load tiles into asset server.
+fn load_tiles(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let tiles = Tiles {
+        stone: asset_server.load("tiles/stone.glb#Scene0"),
+        stone_rocks: asset_server.load("tiles/stone_rocks.glb#Scene0"),
+        stone_mountain: asset_server.load("tiles/stone_mountain.glb#Scene0"),
+        stone_hill: asset_server.load("tiles/stone_hill.glb#Scene0"),
+    };
+
+    commands.insert_resource(tiles);
+}
+/*
 fn load_tiles(mut commands: Commands, asset_server: Res<AssetServer>) {
     let tiles: Vec<Handle<Scene>> = vec![
         asset_server.load("tiles/water.glb#Scene0"),
@@ -122,7 +151,35 @@ fn load_tiles(mut commands: Commands, asset_server: Res<AssetServer>) {
         offset += 1.0;
     }
 }
+*/
 
+fn spawn_tiles(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    tiles: Res<Tiles>,
+    done: Local<bool>,
+) {
+    if !*done {
+        let tiles_vec = tiles.as_vec();
+        if asset_server.get_group_load_state(tiles_vec.iter().map(|handle| handle.id))
+            == bevy::asset::LoadState::Loaded
+        {
+            let mut offset = 0.0;
+            for tile in tiles_vec {
+                commands
+                    .spawn_bundle((
+                        Transform::from_xyz(offset, 0.0, -1.0),
+                        GlobalTransform::identity(),
+                        Tile {},
+                    ))
+                    .with_children(|parent| {
+                        parent.spawn_scene(tile);
+                    });
+                offset += 1.0;
+            }
+        }
+    }
+}
 /// set up a simple 3D scene
 fn setup(mut commands: Commands) {
     commands
