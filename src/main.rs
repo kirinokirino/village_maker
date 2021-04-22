@@ -6,7 +6,7 @@
     clippy::needless_pass_by_value
 )]
 
-use bevy::{audio::AudioPlugin, input::system::exit_on_esc_system, prelude::*};
+use bevy::{input::system::exit_on_esc_system, prelude::*};
 use bevy_fly_camera::{FlyCamera, FlyCameraPlugin};
 
 fn main() {
@@ -15,11 +15,11 @@ fn main() {
             title: "I am a window!".to_string(),
             ..Default::default()
         })
-        //.insert_resource(Msaa { samples: 4 })
+        .insert_resource(Msaa { samples: 4 })
         // Adds frame time diagnostics
-        .add_plugin(bevy::diagnostic::FrameTimeDiagnosticsPlugin::default())
+        //.add_plugin(bevy::diagnostic::FrameTimeDiagnosticsPlugin::default())
         // Adds a system that prints diagnostics to the console
-        .add_plugin(bevy::diagnostic::LogDiagnosticsPlugin::default())
+        //.add_plugin(bevy::diagnostic::LogDiagnosticsPlugin::default())
         // Any plugin can register diagnostics
         //.add_plugin(bevy::diagnostic::EntityCountDiagnosticsPlugin::default())
         // Uncomment this to add an asset count diagnostics:
@@ -30,7 +30,16 @@ fn main() {
         //.add_plugin(bevy::wgpu::diagnostic::WgpuResourceDiagnosticsPlugin::default())
         // Uncomment this to add an entity count diagnostics:
         .add_plugin(FlyCameraPlugin)
-        .add_plugins_with(DefaultPlugins, |group| group.disable::<AudioPlugin>())
+        .add_plugins_with(DefaultPlugins, |group| {
+            group
+                .disable::<bevy::pbr::PbrPlugin>()
+                .disable::<bevy::audio::AudioPlugin>()
+                .disable::<bevy::diagnostic::DiagnosticsPlugin>()
+                .disable::<bevy::sprite::SpritePlugin>()
+                .disable::<bevy::text::TextPlugin>()
+                .disable::<bevy::ui::UiPlugin>()
+                .disable::<bevy::gilrs::GilrsPlugin>()
+        })
         .add_startup_system(load_models.system())
         .add_startup_system(setup.system())
         .add_system(exit_on_esc_system.system())
