@@ -46,13 +46,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     models.push(asset_server.load("models/water.glb#Scene0"));
     models.push(asset_server.load("models/water_rocks.glb#Scene0"));
     models.push(asset_server.load("models/water_island.glb#Scene0"));
-    models.push(asset_server.load("models/unit_wallTower.glb#Scene0"));
-    models.push(asset_server.load("models/unit_tree.glb#Scene0"));
-    models.push(asset_server.load("models/unit_tower.glb#Scene0"));
-    models.push(asset_server.load("models/unit_mill.glb#Scene0"));
-    models.push(asset_server.load("models/unit_houseLarge.glb#Scene0"));
-    models.push(asset_server.load("models/unit_house.glb#Scene0"));
-    models.push(asset_server.load("models/unit_boat.glb#Scene0"));
     models.push(asset_server.load("models/river_straight.glb#Scene0"));
     models.push(asset_server.load("models/river_start.glb#Scene0"));
     models.push(asset_server.load("models/river_intersectionH.glb#Scene0"));
@@ -67,20 +60,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     models.push(asset_server.load("models/river_crossing.glb#Scene0"));
     models.push(asset_server.load("models/river_cornerSharp.glb#Scene0"));
     models.push(asset_server.load("models/river_corner.glb#Scene0"));
-    models.push(asset_server.load("models/path_straight.glb#Scene0"));
-    models.push(asset_server.load("models/path_start.glb#Scene0"));
-    models.push(asset_server.load("models/path_intersectionH.glb#Scene0"));
-    models.push(asset_server.load("models/path_intersectionG.glb#Scene0"));
-    models.push(asset_server.load("models/path_intersectionF.glb#Scene0"));
-    models.push(asset_server.load("models/path_intersectionE.glb#Scene0"));
-    models.push(asset_server.load("models/path_intersectionD.glb#Scene0"));
-    models.push(asset_server.load("models/path_intersectionC.glb#Scene0"));
-    models.push(asset_server.load("models/path_intersectionB.glb#Scene0"));
-    models.push(asset_server.load("models/path_intersectionA.glb#Scene0"));
-    models.push(asset_server.load("models/path_end.glb#Scene0"));
-    models.push(asset_server.load("models/path_crossing.glb#Scene0"));
-    models.push(asset_server.load("models/path_cornerSharp.glb#Scene0"));
-    models.push(asset_server.load("models/path_corner.glb#Scene0"));
     models.push(asset_server.load("models/building_water.glb#Scene0"));
     models.push(asset_server.load("models/building_wall.glb#Scene0"));
     models.push(asset_server.load("models/building_village.glb#Scene0"));
@@ -107,6 +86,32 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     models.push(asset_server.load("models/stone_mountain.glb#Scene0"));
     models.push(asset_server.load("models/stone_hill.glb#Scene0"));
 
+    // Roads and units, don't contain the hexagon tile themselves.
+    /*
+    models.push(asset_server.load("models/unit_wallTower.glb#Scene0"));
+    models.push(asset_server.load("models/unit_tree.glb#Scene0"));
+    models.push(asset_server.load("models/unit_tower.glb#Scene0"));
+    models.push(asset_server.load("models/unit_mill.glb#Scene0"));
+    models.push(asset_server.load("models/unit_houseLarge.glb#Scene0"));
+    models.push(asset_server.load("models/unit_house.glb#Scene0"));
+    models.push(asset_server.load("models/unit_boat.glb#Scene0"));
+    models.push(asset_server.load("models/path_straight.glb#Scene0"));
+    models.push(asset_server.load("models/path_start.glb#Scene0"));
+    models.push(asset_server.load("models/path_intersectionH.glb#Scene0"));
+    models.push(asset_server.load("models/path_intersectionG.glb#Scene0"));
+    models.push(asset_server.load("models/path_intersectionF.glb#Scene0"));
+    models.push(asset_server.load("models/path_intersectionE.glb#Scene0"));
+    models.push(asset_server.load("models/path_intersectionD.glb#Scene0"));
+    models.push(asset_server.load("models/path_intersectionC.glb#Scene0"));
+    models.push(asset_server.load("models/path_intersectionB.glb#Scene0"));
+    models.push(asset_server.load("models/path_intersectionA.glb#Scene0"));
+    models.push(asset_server.load("models/path_end.glb#Scene0"));
+    models.push(asset_server.load("models/path_crossing.glb#Scene0"));
+    models.push(asset_server.load("models/path_cornerSharp.glb#Scene0"));
+    models.push(asset_server.load("models/path_corner.glb#Scene0"));
+    */
+
+    println!("{}", models.len());
     let mut offset = 0.0;
     for model in models {
         commands
