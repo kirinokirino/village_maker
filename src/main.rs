@@ -160,7 +160,13 @@ fn setup(mut commands: Commands) {
             key_down: KeyCode::LShift,
             enabled: true,
         })
-        .insert(Light::default());
+        .insert(Light {
+            color: Color::rgb(1.0, 1.0, 1.0),
+            depth: 0.1..50.0,
+            fov: f32::to_radians(60.0),
+            intensity: 200.0,
+            range: 50.0,
+        });
 }
 
 fn print_positions(keyboard_input: Res<Input<KeyCode>>, query: Query<&Transform, With<Model>>) {
