@@ -6,13 +6,7 @@
     clippy::needless_pass_by_value
 )]
 
-use bevy::{
-    audio::AudioPlugin,
-    diagnostic::{EntityCountDiagnosticsPlugin, FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
-    input::system::exit_on_esc_system,
-    prelude::*,
-    utils::Duration,
-};
+use bevy::{audio::AudioPlugin, input::system::exit_on_esc_system, prelude::*};
 use bevy_fly_camera::{FlyCamera, FlyCameraPlugin};
 
 fn main() {
@@ -21,14 +15,20 @@ fn main() {
             title: "I am a window!".to_string(),
             ..Default::default()
         })
-        .insert_resource(Msaa { samples: 4 })
-        .add_plugin(EntityCountDiagnosticsPlugin)
-        .add_plugin(FrameTimeDiagnosticsPlugin)
-        .add_plugin(LogDiagnosticsPlugin {
-            debug: true,
-            wait_duration: Duration::from_secs(1),
-            filter: None,
-        })
+        //.insert_resource(Msaa { samples: 4 })
+        // Adds frame time diagnostics
+        .add_plugin(bevy::diagnostic::FrameTimeDiagnosticsPlugin::default())
+        // Adds a system that prints diagnostics to the console
+        .add_plugin(bevy::diagnostic::LogDiagnosticsPlugin::default())
+        // Any plugin can register diagnostics
+        //.add_plugin(bevy::diagnostic::EntityCountDiagnosticsPlugin::default())
+        // Uncomment this to add an asset count diagnostics:
+        /*.add_plugin(bevy::asset::diagnostic::AssetCountDiagnosticsPlugin::<
+            Texture,
+        >::default())*/
+        // Uncomment this to add some render resource diagnostics:
+        //.add_plugin(bevy::wgpu::diagnostic::WgpuResourceDiagnosticsPlugin::default())
+        // Uncomment this to add an entity count diagnostics:
         .add_plugin(FlyCameraPlugin)
         .add_plugins_with(DefaultPlugins, |group| group.disable::<AudioPlugin>())
         .add_startup_system(load_models.system())
@@ -130,12 +130,6 @@ fn load_models(mut commands: Commands, asset_server: Res<AssetServer>) {
 
 /// set up a simple 3D scene
 fn setup(mut commands: Commands) {
-    // light
-    commands.spawn_bundle(LightBundle {
-        transform: Transform::from_xyz(4.0, 8.0, 4.0),
-        ..Default::default()
-    });
-
     commands
         .spawn()
         .insert_bundle(PerspectiveCameraBundle {
@@ -157,7 +151,8 @@ fn setup(mut commands: Commands) {
             key_up: KeyCode::Space,
             key_down: KeyCode::LShift,
             enabled: true,
-        });
+        })
+        .insert(Light::default());
 }
 
 fn print_positions(keyboard_input: Res<Input<KeyCode>>, query: Query<&Transform, With<Model>>) {
