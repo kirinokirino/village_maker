@@ -16,19 +16,6 @@ fn main() {
             ..Default::default()
         })
         .insert_resource(Msaa { samples: 4 })
-        // Adds frame time diagnostics
-        //.add_plugin(bevy::diagnostic::FrameTimeDiagnosticsPlugin::default())
-        // Adds a system that prints diagnostics to the console
-        //.add_plugin(bevy::diagnostic::LogDiagnosticsPlugin::default())
-        // Any plugin can register diagnostics
-        //.add_plugin(bevy::diagnostic::EntityCountDiagnosticsPlugin::default())
-        // Uncomment this to add an asset count diagnostics:
-        /*.add_plugin(bevy::asset::diagnostic::AssetCountDiagnosticsPlugin::<
-            Texture,
-        >::default())*/
-        // Uncomment this to add some render resource diagnostics:
-        //.add_plugin(bevy::wgpu::diagnostic::WgpuResourceDiagnosticsPlugin::default())
-        // Uncomment this to add an entity count diagnostics:
         .add_plugin(FlyCameraPlugin)
         .add_plugins_with(DefaultPlugins, |group| {
             group
@@ -39,7 +26,7 @@ fn main() {
                 .disable::<bevy::ui::UiPlugin>()
                 .disable::<bevy::gilrs::GilrsPlugin>()
         })
-        .add_startup_system(load_models.system())
+        .add_startup_system(load_tiles.system())
         .add_startup_system(setup.system())
         .add_system(exit_on_esc_system.system())
         .add_system(mouse_lock.system())
@@ -47,90 +34,90 @@ fn main() {
         .run();
 }
 
-struct Model;
+struct Tile;
 
-/// Load models into asset server.
-fn load_models(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let models: Vec<Handle<Scene>> = vec![
-        asset_server.load("models/water.glb#Scene0"),
-        asset_server.load("models/water_rocks.glb#Scene0"),
-        asset_server.load("models/water_island.glb#Scene0"),
-        asset_server.load("models/river_straight.glb#Scene0"),
-        asset_server.load("models/river_start.glb#Scene0"),
-        asset_server.load("models/river_intersectionH.glb#Scene0"),
-        asset_server.load("models/river_intersectionG.glb#Scene0"),
-        asset_server.load("models/river_intersectionF.glb#Scene0"),
-        asset_server.load("models/river_intersectionE.glb#Scene0"),
-        asset_server.load("models/river_intersectionD.glb#Scene0"),
-        asset_server.load("models/river_intersectionC.glb#Scene0"),
-        asset_server.load("models/river_intersectionB.glb#Scene0"),
-        asset_server.load("models/river_intersectionA.glb#Scene0"),
-        asset_server.load("models/river_end.glb#Scene0"),
-        asset_server.load("models/river_crossing.glb#Scene0"),
-        asset_server.load("models/river_cornerSharp.glb#Scene0"),
-        asset_server.load("models/river_corner.glb#Scene0"),
-        asset_server.load("models/building_water.glb#Scene0"),
-        asset_server.load("models/building_wall.glb#Scene0"),
-        asset_server.load("models/building_village.glb#Scene0"),
-        asset_server.load("models/building_tower.glb#Scene0"),
-        asset_server.load("models/building_smelter.glb#Scene0"),
-        asset_server.load("models/building_sheep.glb#Scene0"),
-        asset_server.load("models/building_mine.glb#Scene0"),
-        asset_server.load("models/building_mill.glb#Scene0"),
-        asset_server.load("models/building_market.glb#Scene0"),
-        asset_server.load("models/building_house.glb#Scene0"),
-        asset_server.load("models/building_farm.glb#Scene0"),
-        asset_server.load("models/building_dock.glb#Scene0"),
-        asset_server.load("models/building_castle.glb#Scene0"),
-        asset_server.load("models/building_cabin.glb#Scene0"),
-        asset_server.load("models/sand.glb#Scene0"),
-        asset_server.load("models/sand_rocks.glb#Scene0"),
-        asset_server.load("models/grass.glb#Scene0"),
-        asset_server.load("models/grass_hill.glb#Scene0"),
-        asset_server.load("models/grass_forest.glb#Scene0"),
-        asset_server.load("models/dirt.glb#Scene0"),
-        asset_server.load("models/dirt_lumber.glb#Scene0"),
-        asset_server.load("models/stone.glb#Scene0"),
-        asset_server.load("models/stone_rocks.glb#Scene0"),
-        asset_server.load("models/stone_mountain.glb#Scene0"),
-        asset_server.load("models/stone_hill.glb#Scene0"),
+/// Load tiles into asset server.
+fn load_tiles(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let tiles: Vec<Handle<Scene>> = vec![
+        asset_server.load("tiles/water.glb#Scene0"),
+        asset_server.load("tiles/water_rocks.glb#Scene0"),
+        asset_server.load("tiles/water_island.glb#Scene0"),
+        asset_server.load("tiles/river_straight.glb#Scene0"),
+        asset_server.load("tiles/river_start.glb#Scene0"),
+        asset_server.load("tiles/river_intersectionH.glb#Scene0"),
+        asset_server.load("tiles/river_intersectionG.glb#Scene0"),
+        asset_server.load("tiles/river_intersectionF.glb#Scene0"),
+        asset_server.load("tiles/river_intersectionE.glb#Scene0"),
+        asset_server.load("tiles/river_intersectionD.glb#Scene0"),
+        asset_server.load("tiles/river_intersectionC.glb#Scene0"),
+        asset_server.load("tiles/river_intersectionB.glb#Scene0"),
+        asset_server.load("tiles/river_intersectionA.glb#Scene0"),
+        asset_server.load("tiles/river_end.glb#Scene0"),
+        asset_server.load("tiles/river_crossing.glb#Scene0"),
+        asset_server.load("tiles/river_cornerSharp.glb#Scene0"),
+        asset_server.load("tiles/river_corner.glb#Scene0"),
+        asset_server.load("tiles/building_water.glb#Scene0"),
+        asset_server.load("tiles/building_wall.glb#Scene0"),
+        asset_server.load("tiles/building_village.glb#Scene0"),
+        asset_server.load("tiles/building_tower.glb#Scene0"),
+        asset_server.load("tiles/building_smelter.glb#Scene0"),
+        asset_server.load("tiles/building_sheep.glb#Scene0"),
+        asset_server.load("tiles/building_mine.glb#Scene0"),
+        asset_server.load("tiles/building_mill.glb#Scene0"),
+        asset_server.load("tiles/building_market.glb#Scene0"),
+        asset_server.load("tiles/building_house.glb#Scene0"),
+        asset_server.load("tiles/building_farm.glb#Scene0"),
+        asset_server.load("tiles/building_dock.glb#Scene0"),
+        asset_server.load("tiles/building_castle.glb#Scene0"),
+        asset_server.load("tiles/building_cabin.glb#Scene0"),
+        asset_server.load("tiles/sand.glb#Scene0"),
+        asset_server.load("tiles/sand_rocks.glb#Scene0"),
+        asset_server.load("tiles/grass.glb#Scene0"),
+        asset_server.load("tiles/grass_hill.glb#Scene0"),
+        asset_server.load("tiles/grass_forest.glb#Scene0"),
+        asset_server.load("tiles/dirt.glb#Scene0"),
+        asset_server.load("tiles/dirt_lumber.glb#Scene0"),
+        asset_server.load("tiles/stone.glb#Scene0"),
+        asset_server.load("tiles/stone_rocks.glb#Scene0"),
+        asset_server.load("tiles/stone_mountain.glb#Scene0"),
+        asset_server.load("tiles/stone_hill.glb#Scene0"),
     ];
 
     // Roads and units, don't contain the hexagon tile themselves.
     /*
-    models.push(asset_server.load("models/unit_wallTower.glb#Scene0"));
-    models.push(asset_server.load("models/unit_tree.glb#Scene0"));
-    models.push(asset_server.load("models/unit_tower.glb#Scene0"));
-    models.push(asset_server.load("models/unit_mill.glb#Scene0"));
-    models.push(asset_server.load("models/unit_houseLarge.glb#Scene0"));
-    models.push(asset_server.load("models/unit_house.glb#Scene0"));
-    models.push(asset_server.load("models/unit_boat.glb#Scene0"));
-    models.push(asset_server.load("models/path_straight.glb#Scene0"));
-    models.push(asset_server.load("models/path_start.glb#Scene0"));
-    models.push(asset_server.load("models/path_intersectionH.glb#Scene0"));
-    models.push(asset_server.load("models/path_intersectionG.glb#Scene0"));
-    models.push(asset_server.load("models/path_intersectionF.glb#Scene0"));
-    models.push(asset_server.load("models/path_intersectionE.glb#Scene0"));
-    models.push(asset_server.load("models/path_intersectionD.glb#Scene0"));
-    models.push(asset_server.load("models/path_intersectionC.glb#Scene0"));
-    models.push(asset_server.load("models/path_intersectionB.glb#Scene0"));
-    models.push(asset_server.load("models/path_intersectionA.glb#Scene0"));
-    models.push(asset_server.load("models/path_end.glb#Scene0"));
-    models.push(asset_server.load("models/path_crossing.glb#Scene0"));
-    models.push(asset_server.load("models/path_cornerSharp.glb#Scene0"));
-    models.push(asset_server.load("models/path_corner.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/unit_wallTower.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/unit_tree.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/unit_tower.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/unit_mill.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/unit_houseLarge.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/unit_house.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/unit_boat.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/path_straight.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/path_start.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/path_intersectionH.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/path_intersectionG.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/path_intersectionF.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/path_intersectionE.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/path_intersectionD.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/path_intersectionC.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/path_intersectionB.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/path_intersectionA.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/path_end.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/path_crossing.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/path_cornerSharp.glb#Scene0"));
+    tiles.push(asset_server.load("tiles/path_corner.glb#Scene0"));
     */
 
     let mut offset = 0.0;
-    for model in models {
+    for tile in tiles {
         commands
             .spawn_bundle((
                 Transform::from_xyz(offset, 0.0, -1.0),
                 GlobalTransform::identity(),
-                Model {},
+                Tile {},
             ))
             .with_children(|parent| {
-                parent.spawn_scene(model);
+                parent.spawn_scene(tile);
             });
         offset += 1.0;
     }
@@ -169,7 +156,7 @@ fn setup(mut commands: Commands) {
         });
 }
 
-fn print_positions(keyboard_input: Res<Input<KeyCode>>, query: Query<&Transform, With<Model>>) {
+fn print_positions(keyboard_input: Res<Input<KeyCode>>, query: Query<&Transform, With<Tile>>) {
     if keyboard_input.just_pressed(KeyCode::Key0) {
         for transform in query.iter() {
             println!("{:#?}", transform);
